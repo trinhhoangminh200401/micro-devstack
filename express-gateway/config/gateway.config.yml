@@ -1,0 +1,80 @@
+http:
+  port: 8080
+# admin:
+#   port: 9876
+#   host: localhost
+
+# --------------------------
+# API endpoints (client gọi tới)
+# --------------------------
+apiEndpoints:
+  user:
+    host: 'localhost'
+    paths:
+      - "/users/*"
+      - "/auth/*"
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    
+
+# --------------------------
+# Service endpoints (microservice thật)
+# --------------------------
+serviceEndpoints:
+  userService:
+    url: 'http://localhost:3000'
+
+# --------------------------
+# Policies được bật
+# --------------------------
+policies:
+  - cors
+  - proxy
+  - rate-limit
+
+# --------------------------
+# Pipelines = flow xử lý request
+# --------------------------
+pipelines:
+  default:
+    apiEndpoints:
+      - user
+    policies:
+      - cors:
+          action:
+            origin: '*'
+            credentials: true
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+            allowedHeaders:
+              - Authorization
+              - Content-type
+              - Origin
+              - Access-Control-Allow-Origin
+              - Accept
+              - Options
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+            exposedHeaders:
+              - Content-type
+              - Origin
+              - Access-Control-Allow-Origin
+              - Accept
+              - Options
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+            preflightContinue: false
+            optionsSuccessStatus: 204
+
+      - rate-limit:
+          action:
+            max: 1
+            windowMs: 60000   # 100 requests mỗi phút
+
+      - proxy:
+          - action:
+              serviceEndpoint: userService
+              changeOrigin: true
