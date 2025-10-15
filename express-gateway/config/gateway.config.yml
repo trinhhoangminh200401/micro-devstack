@@ -71,7 +71,7 @@ pipelines:
 
       - rate-limit:
           action:
-            max: 1
+            max: 100
             windowMs: 60000   # 100 requests mỗi phút
 
       - proxy:
