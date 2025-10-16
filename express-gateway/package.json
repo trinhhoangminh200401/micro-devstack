@@ -5,7 +5,18 @@
   "license": "UNLICENSED",
   "version": "1.0.0",
   "main": "server.js",
+  
   "dependencies": {
     "express-gateway": "^1.16.11"
-  }
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "//": "You can run all services with 'npm start' command",
+"scripts": {
+  "start:gateway": "node server.js",
+  "start:auth": "cd ../auth-services && npm run dev",
+  "start:activity": "cd ../activity-service && npm run dev",
+  "start:db": "docker compose -f ../docker-compose.yml up -d"
+}
 }
